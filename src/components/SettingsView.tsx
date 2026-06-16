@@ -137,6 +137,19 @@ create table expenses (
   payment_method text default 'cash',
   created_at timestamp with time zone default timezone('utc'::text, now()) not null
 );
+
+-- 5. USER ACCOUNTS TABLE (Multi-device/unconfirmed fallback)
+create table user_accounts (
+  id text primary key,
+  email text unique not null,
+  password text not null,
+  business_name text,
+  business_phone text,
+  business_address text,
+  currency text default '৳',
+  language text default 'bn',
+  created_at timestamp with time zone default timezone('utc'::text, now()) not null
+);
 `;
     
     navigator.clipboard.writeText(code);

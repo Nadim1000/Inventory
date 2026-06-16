@@ -259,6 +259,35 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
           businessSettings = parsed.settings || defaultSettings;
           userEmail = parsed.email || userEmail;
         } catch (e) {}
+      } else if (supabase) {
+        // Fetch from Supabase database fallback! (For multi-device and clean cache)
+        try {
+          const { data: dbUser } = await supabase
+            .from('user_accounts')
+            .select('*')
+            .eq('id', uId)
+            .single();
+          if (dbUser) {
+            businessSettings = {
+              businessName: dbUser.business_name || (language === 'bn' ? "আমার ব্যবসা" : "My Store"),
+              businessAddress: dbUser.business_address || '',
+              businessPhone: dbUser.business_phone || '',
+              currency: dbUser.currency || "৳",
+              taxRate: 0,
+              language: dbUser.language || 'bn'
+            };
+            userEmail = dbUser.email;
+            
+            // Sync locally cache
+            localStorage.setItem(`amar_hisab_profile_${uId}`, JSON.stringify({
+              id: uId,
+              email: userEmail,
+              settings: businessSettings
+            }));
+          }
+        } catch (e) {
+          console.warn("Could not find user in user_accounts table:", e);
+        }
       }
       
       setCurrentUser({
@@ -352,7 +381,53 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         });
 
         if (error) {
-          // Graceful fallback to locally saved account credentials if Supabase fails (e.g., Email is unconfirmed)
+          // Graceful fallback 1: Check shared credentials table 'user_accounts' in Supabase to assist unconfirmed emails / multi-device
+          try {
+            const { data: dbUser } = await supabase
+              .from('user_accounts')
+              .select('*')
+              .eq('email', email.toLowerCase())
+              .single();
+
+            if (dbUser && dbUser.password === pass) {
+              const uId = dbUser.id;
+              const bizSettings: BusinessSettings = {
+                businessName: dbUser.business_name || (language === 'bn' ? "আমার ব্যবসা" : "My Store"),
+                businessAddress: dbUser.business_address || '',
+                businessPhone: dbUser.business_phone || '',
+                currency: dbUser.currency || "৳",
+                taxRate: 0,
+                language: dbUser.language || 'bn'
+              };
+
+              // Cache settings locally
+              localStorage.setItem(`amar_hisab_profile_${uId}`, JSON.stringify({
+                id: uId,
+                email: dbUser.email,
+                settings: bizSettings
+              }));
+
+              // Sync user locally to localStorage's register
+              const systemUsers = JSON.parse(localStorage.getItem('amar_hisab_users') || '[]');
+              if (!systemUsers.some((u: any) => u.id === uId)) {
+                systemUsers.push({
+                  id: uId,
+                  email: dbUser.email,
+                  password: pass,
+                  settings: bizSettings
+                });
+                localStorage.setItem('amar_hisab_users', JSON.stringify(systemUsers));
+              }
+
+              await loadUserData(uId);
+              setActivePage('dashboard');
+              return true;
+            }
+          } catch (dbErr) {
+            console.warn("Supabase user_accounts table read failed or skipped:", dbErr);
+          }
+
+          // Graceful fallback 2: Check locally stored users inside this specific browser
           const systemUsers = JSON.parse(localStorage.getItem('amar_hisab_users') || '[]');
           const localMatch = systemUsers.find((u: any) => u.email.toLowerCase() === email.toLowerCase());
           
@@ -475,6 +550,22 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
             email,
             settings: personalizedSettings
           }));
+
+          // Backup credentials to custom database table immediately to enable login on any device even without email verification
+          try {
+            await supabase.from('user_accounts').insert({
+              id: createdUserId,
+              email: email.toLowerCase(),
+              password: pass,
+              business_name: bizName,
+              business_phone: bizPhone,
+              business_address: bizAddr,
+              currency: "৳",
+              language: 'bn'
+            });
+          } catch (dbErr) {
+            console.warn("Could not record backup fallback user credentials:", dbErr);
+          }
         }
       } catch (err: any) {
         console.error("Supabase signUp exception:", err);
