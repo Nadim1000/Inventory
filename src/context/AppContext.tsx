@@ -228,9 +228,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     const lastUser = localStorage.getItem('amar_hisab_last_logged_in');
     if (lastUser) {
       await loadUserData(lastUser);
-    } else {
-      // Default auto login demo (convenience in development & preview)
-      await loadUserData("u_demo");
     }
   };
 
