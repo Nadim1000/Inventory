@@ -1,0 +1,6 @@
+{
+  "name": "আমার হিসাব - Amar Hisab",
+  "description": "A modern and clean local business management dashboard in Bengali and English, supporting Sales, Inventory, Customers, Expenses, and Reports.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,42 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Hind+Siliguri:wght@400;500;600;700&family=JetBrains+Mono:wght@400;505;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Hind Siliguri", "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+}
+
+/* Custom print layouts to format thermal paper in printer prompts */
+@media print {
+  body {
+    background-color: white !important;
+    color: black !important;
+  }
+  
+  /* Hide the rest of the application dashboard elements when receipt pops */
+  #app-sidebar,
+  #sidebar-overlay,
+  #mobile-menu-toggle,
+  #mobile-lang-btn,
+  #report-window-header,
+  #app-workspace-content-canvas > *:not(#printable-report-body),
+  #receipt-modal-container button {
+    display: none !important;
+  }
+  
+  #receipt-modal-container {
+    position: absolute !important;
+    left: 0 !important;
+    top: 0 !important;
+    width: 100% !important;
+    height: auto !important;
+    background: white !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+  }
+
+  #printable-report-body {
+    display: block !important;
+    width: 100% !important;
+  }
+}
