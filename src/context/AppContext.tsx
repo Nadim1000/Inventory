@@ -443,10 +443,12 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
     if (supabase) {
       try {
+        const redirectUrl = typeof window !== 'undefined' ? window.location.origin : undefined;
         const { data, error } = await supabase.auth.signUp({
           email: email,
           password: pass,
           options: {
+            emailRedirectTo: redirectUrl,
             data: {
               businessName: bizName,
               business_name: bizName,
