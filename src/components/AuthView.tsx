@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import { translations } from '../translations';
-import { Store, ShieldAlert, KeyRound, Mail, UserPlus, Fingerprint, MapPin, Phone } from 'lucide-react';
+import { Store, ShieldAlert, KeyRound, Mail, UserPlus, MapPin, Phone } from 'lucide-react';
 import { motion } from 'motion/react';
 
 export const AuthView: React.FC = () => {
@@ -19,11 +19,7 @@ export const AuthView: React.FC = () => {
   const [businessAddress, setBusinessAddress] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Quick fill demo accounts
-  const handleQuickDemoFill = () => {
-    setEmail('demo@amarhisab.com');
-    setPassword('demo123Password');
-  };
+
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -184,27 +180,7 @@ export const AuthView: React.FC = () => {
             </button>
           </form>
 
-          {/* Quick-fill section to guide the user in local environments */}
-          {isLogin && (
-            <div className="mt-5 p-3.5 bg-slate-50 border border-slate-100 rounded-xl relative overflow-hidden">
-              <span className="text-[10px] font-semibold text-emerald-800 uppercase tracking-widest block mb-1">
-                ⚡ {language === 'bn' ? "ডেমো লগইন তথ্য" : "Quick Demo Access"}
-              </span>
-              <p className="text-xs text-slate-500 mb-2 font-sans leading-relaxed">
-                {language === 'bn' 
-                  ? "হিসাব নিকাশ দেখতে সরাসরি এই বাটনটিতে চাপুন:" 
-                  : "Click below to automatically fill-in the sandboxed retail accounts store:"}
-              </p>
-              <button
-                id="btn-quick-fill-demo"
-                onClick={handleQuickDemoFill}
-                className="text-xs text-emerald-600 bg-emerald-50 hover:bg-emerald-100 hover:text-emerald-700 px-3 py-1.5 rounded-lg border border-emerald-100 font-sans font-medium transition flex items-center gap-1.5 w-full justify-center"
-              >
-                <Fingerprint className="w-3.5 h-3.5" />
-                {language === 'bn' ? "ডিলারের ডেমো অ্যাকাউন্ট ফিল" : "Autofill Sandbox Credentials"}
-              </button>
-            </div>
-          )}
+
 
           {/* Toggle link layout */}
           <div className="mt-6 text-center">
