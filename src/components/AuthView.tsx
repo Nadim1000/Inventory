@@ -3,6 +3,7 @@ import { useApp } from '../context/AppContext';
 import { translations } from '../translations';
 import { Store, ShieldAlert, KeyRound, Mail, UserPlus, MapPin, Phone } from 'lucide-react';
 import { motion } from 'motion/react';
+import AppLogoImg from '../assets/images/app_logo_1781719000363.jpg';
 
 export const AuthView: React.FC = () => {
   const { loginUser, signupUser, authError, language, setLanguage } = useApp();
@@ -63,11 +64,11 @@ export const AuthView: React.FC = () => {
       <div className="sm:mx-auto sm:w-full sm:max-w-md my-auto">
         {/* Branding header */}
         <div className="text-center">
-          <div className="inline-flex items-center justify-center bg-emerald-600 p-3.5 rounded-xl shadow-xl shadow-emerald-600/10 mb-5">
-            <Store className="w-8 h-8 text-white animate-pulse" />
+          <div className="inline-flex items-center justify-center p-1 bg-slate-50 border border-slate-200 rounded-2xl shadow-xl shadow-slate-200/50 mb-4 w-24 h-24 overflow-hidden">
+            <img src={AppLogoImg} alt="Amar Hisab Logo" className="w-full h-full object-contain" referrerPolicy="no-referrer" />
           </div>
           <h2 className="font-sans font-extrabold text-3xl text-slate-900 tracking-tight">
-            {t.appName}
+            Amar Hisab
           </h2>
           <p className="mt-2 text-sm text-slate-500 font-sans px-4">
             {t.appSubtitle}
