@@ -12,9 +12,9 @@ import {
   LogOut,
   Globe,
   Menu,
-  X
+  X,
+  Store
 } from 'lucide-react';
-import AppLogoImg from '../assets/images/app_logo_1781719000363.jpg';
 
 export const Sidebar: React.FC = () => {
   const { 
@@ -44,8 +44,8 @@ export const Sidebar: React.FC = () => {
       {/* Mobile Top Navigation bar */}
       <div className="md:hidden flex items-center justify-between bg-white border-b border-slate-200 text-slate-800 px-4 py-3 shadow-sm sticky top-0 z-50">
         <div className="flex items-center space-x-2">
-          <div className="p-0.5 bg-slate-50 border border-slate-100 rounded-lg overflow-hidden flex items-center justify-center w-9 h-9">
-            <img src={AppLogoImg} alt="Amar Hisab Logo" className="w-full h-full object-contain" referrerPolicy="no-referrer" />
+          <div className="bg-emerald-600 p-1.5 rounded-lg">
+            <Store className="w-5 h-5 text-white" />
           </div>
           <div>
             <h1 className="font-sans font-bold text-sm tracking-tight text-slate-800">{t.appName}</h1>
@@ -93,13 +93,13 @@ export const Sidebar: React.FC = () => {
       >
         {/* Upper Brand / Profile section */}
         <div>
-          <div className="p-4 border-b border-slate-200 hidden md:flex items-center space-x-3">
-            <div className="p-0.5 bg-slate-50 border border-slate-200 rounded-xl shadow-sm overflow-hidden flex items-center justify-center w-12 h-12 flex-shrink-0">
-              <img src={AppLogoImg} alt="Amar Hisab Logo" className="w-full h-full object-contain" referrerPolicy="no-referrer" />
+          <div className="p-5 border-b border-slate-200 hidden md:flex items-center space-x-3">
+            <div className="bg-emerald-600 p-2.5 rounded-xl shadow-sm">
+              <Store className="w-6 h-6 text-white" />
             </div>
             <div>
-              <h2 className="font-sans font-extrabold text-slate-955 text-md tracking-tight leading-none mb-1">Amar Hisab</h2>
-              <span className="text-[10px] font-bold tracking-wider text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded uppercase font-mono">
+              <h2 className="font-sans font-extrabold text-slate-900 text-lg tracking-wide">{t.appName}</h2>
+              <span className="text-[10px] font-bold tracking-wider text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded uppercase font-mono">
                 {language === 'bn' ? 'ব্যবসায়ীক হিসাব' : 'BUSINESS ID'}
               </span>
             </div>
