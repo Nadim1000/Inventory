@@ -27,7 +27,8 @@ export const SalesView: React.FC = () => {
     addCustomer,
     addProduct, 
     settings, 
-    language 
+    language,
+    customCategories
   } = useApp();
 
   const t = translations[language];
@@ -52,14 +53,27 @@ export const SalesView: React.FC = () => {
   // Left column view tab selector
   const [activeLeftTab, setActiveLeftTab] = useState<'search' | 'custom'>('search');
 
+  // Form standard list of accessible product categories based on custom definitions AND existing products
+  const activeProductCategories = Array.from(new Set([
+    ...customCategories,
+    ...products.map(p => p.category).filter(Boolean)
+  ])).filter(c => typeof c === 'string' && c.trim() !== '');
+
   // New custom product states
   const [customName, setCustomName] = useState('');
-  const [customCategory, setCustomCategory] = useState('groceries');
+  const [customCategory, setCustomCategory] = useState('');
   const [customSalesPrice, setCustomSalesPrice] = useState('100');
   const [customPurchasePrice, setCustomPurchasePrice] = useState('80');
   const [customStock, setCustomStock] = useState('50');
   const [customQty, setCustomQty] = useState('1');
   const [customSku, setCustomSku] = useState('');
+
+  // Set initial customCategory value once categories are calculated
+  React.useEffect(() => {
+    if (!customCategory && activeProductCategories.length > 0) {
+      setCustomCategory(activeProductCategories[0]);
+    }
+  }, [activeProductCategories, customCategory]);
 
   // Finished Invoice modal
   const [showInvoiceReceipt, setShowInvoiceReceipt] = useState<boolean>(false);
@@ -442,13 +456,14 @@ export const SalesView: React.FC = () => {
                       onChange={(e) => setCustomCategory(e.target.value)}
                       className="w-full text-xs font-sans px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-emerald-500"
                     >
-                      <option value="groceries">{t.invCategories.groceries}</option>
-                      <option value="electronics">{t.invCategories.electronics}</option>
-                      <option value="clothing">{t.invCategories.clothing}</option>
-                      <option value="cosmetics">{t.invCategories.cosmetics}</option>
-                      <option value="pharmacy">{t.invCategories.pharmacy}</option>
-                      <option value="stationery">{t.invCategories.stationery}</option>
-                      <option value="other">{t.invCategories.other}</option>
+                      {activeProductCategories.map(catVal => (
+                        <option key={catVal} value={catVal}>
+                          {t.invCategories[catVal as keyof typeof t.invCategories] || catVal}
+                        </option>
+                      ))}
+                      {activeProductCategories.length === 0 && (
+                        <option value="">{language === 'bn' ? "সাধারণ" : "General"}</option>
+                      )}
                     </select>
                   </div>
                 </div>

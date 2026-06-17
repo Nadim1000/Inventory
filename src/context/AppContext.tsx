@@ -69,6 +69,11 @@ interface AppContextType {
   supabaseConfig: { url: string; anonKey: string };
   setSupabaseConfig: (config: { url: string; anonKey: string }) => void;
   syncLocalToSupabase: () => Promise<{ success: boolean; message: string }>;
+
+  // Manual categories management
+  customCategories: string[];
+  addCustomCategory: (category: string) => void;
+  deleteCustomCategory: (category: string) => void;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -172,6 +177,47 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [sales, setSales] = useState<Sale[]>([]);
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [settings, setSettings] = useState<BusinessSettings>(defaultSettings);
+  const [customCategories, setCustomCategories] = useState<string[]>([]);
+
+  // Load and save custom categories automatically based on language & userId
+  useEffect(() => {
+    if (!userId) {
+      setCustomCategories([]);
+      return;
+    }
+    const saved = localStorage.getItem(`amar_hisab_categories_${userId}`);
+    if (saved) {
+      try {
+        setCustomCategories(JSON.parse(saved));
+      } catch (e) {
+        setCustomCategories([]);
+      }
+    } else {
+      // Setup a primary default initial category of "সাধারণ" or "General"
+      const initial = [language === 'bn' ? "সাধারণ" : "General"];
+      setCustomCategories(initial);
+      localStorage.setItem(`amar_hisab_categories_${userId}`, JSON.stringify(initial));
+    }
+  }, [userId, language]);
+
+  const addCustomCategory = (cat: string) => {
+    const trimmed = cat.trim();
+    if (!trimmed) return;
+    if (customCategories.some(c => c.toLowerCase() === trimmed.toLowerCase())) return;
+    const updated = [...customCategories, trimmed];
+    setCustomCategories(updated);
+    if (userId) {
+      localStorage.setItem(`amar_hisab_categories_${userId}`, JSON.stringify(updated));
+    }
+  };
+
+  const deleteCustomCategory = (cat: string) => {
+    const updated = customCategories.filter(c => c !== cat);
+    setCustomCategories(updated);
+    if (userId) {
+      localStorage.setItem(`amar_hisab_categories_${userId}`, JSON.stringify(updated));
+    }
+  };
 
   // Initialize standard default mock credentials so someone can log in immediately
   useEffect(() => {
@@ -999,7 +1045,12 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
       supabaseConfig,
       setSupabaseConfig: saveSupabaseConfig,
-      syncLocalToSupabase
+      syncLocalToSupabase,
+
+      // Custom categories exposed
+      customCategories,
+      addCustomCategory,
+      deleteCustomCategory
     }}>
       {children}
     </AppContext.Provider>

@@ -18,7 +18,17 @@ import {
 import { motion } from 'motion/react';
 
 export const InventoryView: React.FC = () => {
-  const { products, addProduct, updateProduct, deleteProduct, settings, language } = useApp();
+  const { 
+    products, 
+    addProduct, 
+    updateProduct, 
+    deleteProduct, 
+    settings, 
+    language,
+    customCategories,
+    addCustomCategory,
+    deleteCustomCategory
+  } = useApp();
   const t = translations[language];
   const curSymbol = settings.currency;
 
@@ -27,25 +37,31 @@ export const InventoryView: React.FC = () => {
   const [showAddModal, setShowAddModal] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
 
+  // Form standard list of accessible product categories based on custom definitions AND existing products
+  const activeProductCategories = Array.from(new Set([
+    ...customCategories,
+    ...products.map(p => p.category).filter(Boolean)
+  ])).filter(c => typeof c === 'string' && c.trim() !== '');
+
   // Form states
   const [name, setName] = useState('');
   const [sku, setSku] = useState('');
   const [stock, setStock] = useState('10');
   const [purchasePrice, setPurchasePrice] = useState('100');
   const [salesPrice, setSalesPrice] = useState('120');
-  const [category, setCategory] = useState('groceries');
+  const [category, setCategory] = useState('');
   const [minStockAlert, setMinStockAlert] = useState('5');
 
-  // Categories translation mapper
-  const categoriesList = [
-    { value: 'groceries', label: t.invCategories.groceries },
-    { value: 'electronics', label: t.invCategories.electronics },
-    { value: 'clothing', label: t.invCategories.clothing },
-    { value: 'cosmetics', label: t.invCategories.cosmetics },
-    { value: 'pharmacy', label: t.invCategories.pharmacy },
-    { value: 'stationery', label: t.invCategories.stationery },
-    { value: 'other', label: t.invCategories.other },
-  ];
+  // Mini inline category manager state
+  const [newCatName, setNewCatName] = useState('');
+  const [isAddingNewCat, setIsAddingNewCat] = useState(false);
+
+  // Set initial category value once categories are calculated or changed
+  React.useEffect(() => {
+    if (!category && activeProductCategories.length > 0) {
+      setCategory(activeProductCategories[0]);
+    }
+  }, [activeProductCategories, category]);
 
   // Filtering products
   const filteredProducts = products.filter(p => {
@@ -62,9 +78,11 @@ export const InventoryView: React.FC = () => {
     setStock('10');
     setPurchasePrice('100');
     setSalesPrice('120');
-    setCategory('groceries');
+    setCategory(activeProductCategories[0] || (language === 'bn' ? "সাধারণ" : "General"));
     setMinStockAlert('5');
     setEditingProduct(null);
+    setNewCatName('');
+    setIsAddingNewCat(false);
   };
 
   const handleOpenAddModal = () => {
@@ -82,6 +100,8 @@ export const InventoryView: React.FC = () => {
     setCategory(p.category);
     setMinStockAlert(p.minStockAlert.toString());
     setShowAddModal(true);
+    setNewCatName('');
+    setIsAddingNewCat(false);
   };
 
   const handleFormSubmit = (e: React.FormEvent) => {
@@ -170,8 +190,10 @@ export const InventoryView: React.FC = () => {
             className="text-xs bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 font-sans"
           >
             <option value="all">{t.all}</option>
-            {categoriesList.map(cat => (
-              <option key={cat.value} value={cat.value}>{cat.label}</option>
+            {activeProductCategories.map(catVal => (
+              <option key={catVal} value={catVal}>
+                {t.invCategories[catVal as keyof typeof t.invCategories] || catVal}
+              </option>
             ))}
           </select>
         </div>
@@ -350,19 +372,91 @@ export const InventoryView: React.FC = () => {
                   />
                 </div>
                 <div>
-                  <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wide mb-1 font-sans">
-                    {t.invCategory}
-                  </label>
-                  <select
-                    id="form-product-category"
-                    value={category}
-                    onChange={(e) => setCategory(e.target.value)}
-                    className="w-full text-xs font-sans px-3 py-2 border border-slate-200 bg-white rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-slate-800"
-                  >
-                    {categoriesList.map(cat => (
-                      <option key={cat.value} value={cat.value}>{cat.label}</option>
-                    ))}
-                  </select>
+                  <div className="flex items-center justify-between mb-1">
+                    <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wide font-sans">
+                      {t.invCategory}
+                    </label>
+                    <button
+                      type="button"
+                      onClick={() => setIsAddingNewCat(!isAddingNewCat)}
+                      className="text-[11px] text-emerald-600 hover:text-emerald-700 font-semibold flex items-center gap-0.5 font-sans"
+                    >
+                      {isAddingNewCat 
+                        ? (language === 'bn' ? '✓ তালিকা দেখুন' : '✓ View List') 
+                        : (language === 'bn' ? '+ নতুন ক্যাটাগরি' : '+ Add New')}
+                    </button>
+                  </div>
+
+                  {isAddingNewCat ? (
+                    <div className="flex items-center gap-1.5 animate-in fade-in slide-in-from-top-1 duration-150">
+                      <input
+                        type="text"
+                        placeholder={language === 'bn' ? "ক্যাটাগরির নাম লিখুন..." : "Enter category name..."}
+                        value={newCatName}
+                        onChange={(e) => setNewCatName(e.target.value)}
+                        className="flex-1 text-xs font-sans px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 text-slate-800 bg-white"
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') {
+                            e.preventDefault();
+                            if (newCatName.trim()) {
+                              addCustomCategory(newCatName.trim());
+                              setCategory(newCatName.trim());
+                              setNewCatName('');
+                              setIsAddingNewCat(false);
+                            }
+                          }
+                        }}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (newCatName.trim()) {
+                            addCustomCategory(newCatName.trim());
+                            setCategory(newCatName.trim());
+                            setNewCatName('');
+                            setIsAddingNewCat(false);
+                          }
+                        }}
+                        className="bg-emerald-600 hover:bg-emerald-700 text-white font-sans text-xs font-semibold px-3 py-2 rounded-lg shadow-sm transition"
+                      >
+                        {language === 'bn' ? 'যোগ করুন' : 'Add'}
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="flex gap-1.5">
+                      <select
+                        id="form-product-category"
+                        value={category}
+                        onChange={(e) => setCategory(e.target.value)}
+                        className="flex-1 text-xs font-sans px-3 py-2 border border-slate-200 bg-white rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-slate-800"
+                      >
+                        {activeProductCategories.map(catVal => (
+                          <option key={catVal} value={catVal}>
+                            {t.invCategories[catVal as keyof typeof t.invCategories] || catVal}
+                          </option>
+                        ))}
+                        {activeProductCategories.length === 0 && (
+                          <option value="">{language === 'bn' ? "কোনো ক্যাটাগরি নেই" : "No Category Available"}</option>
+                        )}
+                      </select>
+
+                      {category && customCategories.includes(category) && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            if (confirm(language === 'bn' ? `আপনি কি "${category}" ক্যাটাগরি মুছে ফেলতে চান?` : `Are you sure you want to delete "${category}"?`)) {
+                              deleteCustomCategory(category);
+                              setCategory(activeProductCategories.find(c => c !== category) || '');
+                            }
+                          }}
+                          className="px-2.5 py-2 text-rose-500 hover:text-rose-600 hover:bg-rose-50 border border-slate-200 rounded-lg transition"
+                          title={language === 'bn' ? "ক্যাটাগরি মুছুন" : "Delete category"}
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      )}
+                    </div>
+                  )}
                 </div>
               </div>
 
