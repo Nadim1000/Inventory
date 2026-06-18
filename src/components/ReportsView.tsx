@@ -177,22 +177,32 @@ export const ReportsView: React.FC = () => {
             title={language === 'bn' ? 'এক্সেল ফাইল ডাউনলোড' : 'Download Excel Sheet'}
           >
             <Download className="w-4 h-4" />
-            <span className="hidden md:inline">{language === 'bn' ? 'ডাউনলোড' : 'Download'}</span>
+            <span className="hidden md:inline">{language === 'bn' ? 'এক্সেল ডাউনলোড' : 'Export Excel'}</span>
           </button>
 
           <button
             id="btn-print-accounting-report"
             onClick={handlePrintReport}
-            className="bg-slate-900 hover:bg-slate-800 text-white font-sans text-xs font-semibold px-4.5 py-2.5 rounded-xl transition flex items-center justify-center gap-1.5 self-start sm:self-center"
+            className="bg-rose-600 hover:bg-rose-700 text-white font-sans text-xs font-semibold px-4.5 py-2.5 rounded-xl transition flex items-center justify-center gap-1.5 self-start sm:self-center shadow-sm cursor-pointer"
           >
-            <Printer className="w-4 h-4" />
-            {t.repGeneratePdf}
+            <FileText className="w-4 h-4" />
+            <span>{language === 'bn' ? 'পিডিএফ ডাউনলোড ও প্রিন্ট' : 'PDF Download & Print'}</span>
           </button>
         </div>
       </div>
 
       {/* Modern Date filter pane */}
       <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-4 print:hidden">
+        {/* PDF Helper Info alert */}
+        <div className="bg-rose-50/70 border border-rose-100 text-rose-800 p-3.5 rounded-xl text-xs leading-relaxed flex items-start gap-2.5 font-medium">
+          <span className="text-base leading-none">💡</span>
+          <span>
+            {language === 'bn' 
+              ? 'টিপস: প্রতিবেদনটি পিডিএফ ফাইল হিসেবে সংরক্ষণ/ডাউনলোড করতে উপরের "পিডিএফ ডাউনলোড ও প্রিন্ট" বাটনে ক্লিক করুন। এরপর প্রিন্টার উইন্ডো চালু হলে Destination ড্রপডাউন থেকে "Save as PDF" নির্বাচন করে সেভ করুন।' 
+              : 'Tip: To save/download this report as a PDF document, click the "PDF Download & Print" button above. Once the browser print window opens, select "Save as PDF" from the Destination dropdown.'}
+          </span>
+        </div>
+
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
           <h4 className="font-sans font-bold text-xs text-slate-800 flex items-center gap-2">
             <Calendar className="w-4 h-4 text-emerald-600" />
