@@ -133,7 +133,7 @@ export const ExpensesView: React.FC = () => {
             {language === 'bn' ? 'সর্বমোট ব্যবসায়ী খরচ' : 'Total Outflow'}
           </span>
           <span className="text-xl font-black text-rose-600 font-sans mt-1 block">
-            {curSymbol} {totalExpenseSum.toLocaleString()}
+            {curSymbol} {(totalExpenseSum || 0).toLocaleString()}
           </span>
         </div>
 
@@ -143,7 +143,7 @@ export const ExpensesView: React.FC = () => {
             🏠 {t.expCategories.rent}
           </span>
           <span className="text-xl font-black text-slate-800 font-sans mt-1 block">
-            {curSymbol} {getCategorySpend('rent').toLocaleString()}
+            {curSymbol} {(getCategorySpend('rent') || 0).toLocaleString()}
           </span>
         </div>
 
@@ -153,7 +153,7 @@ export const ExpensesView: React.FC = () => {
             💡 {t.expCategories.utilities}
           </span>
           <span className="text-xl font-black text-slate-800 font-sans mt-1 block">
-            {curSymbol} {getCategorySpend('utilities').toLocaleString()}
+            {curSymbol} {(getCategorySpend('utilities') || 0).toLocaleString()}
           </span>
         </div>
 
@@ -163,7 +163,7 @@ export const ExpensesView: React.FC = () => {
             👥 {t.expCategories.salary}
           </span>
           <span className="text-xl font-black text-slate-800 font-sans mt-1 block">
-            {curSymbol} {getCategorySpend('salary').toLocaleString()}
+            {curSymbol} {(getCategorySpend('salary') || 0).toLocaleString()}
           </span>
         </div>
       </div>
@@ -239,7 +239,7 @@ export const ExpensesView: React.FC = () => {
 
                     {/* Amount */}
                     <td className="py-4 px-4 text-right font-black text-rose-550 text-sm">
-                      {curSymbol}{e.amount.toLocaleString()}
+                      {curSymbol}{(e.amount || 0).toLocaleString()}
                     </td>
 
                     {/* Action */}

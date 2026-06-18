@@ -118,7 +118,7 @@ export const DashboardView: React.FC = () => {
               {t.dbTotalSales}
             </span>
             <span className="text-xl font-mono font-bold text-emerald-600 block">
-              {curSymbol} {totalSales.toLocaleString()}
+              {curSymbol} {(totalSales || 0).toLocaleString()}
             </span>
             <span className="text-[10px] text-emerald-700 font-sans font-bold bg-emerald-50 border border-emerald-100 px-2 py-0.5 rounded flex items-center gap-0.5 max-w-max">
               <TrendingUp className="w-3 h-3" /> +12.4% {language === 'bn' ? 'এই সপ্তাহে' : 'this week'}
@@ -136,7 +136,7 @@ export const DashboardView: React.FC = () => {
               {t.dbTotalProfit}
             </span>
             <span className="text-xl font-mono font-bold text-emerald-700 block">
-              {curSymbol} {totalNetProfit.toLocaleString()}
+              {curSymbol} {(totalNetProfit || 0).toLocaleString()}
             </span>
             <span className="text-[10px] text-emerald-700 font-sans font-bold bg-emerald-50 border border-emerald-100 px-2 py-0.5 rounded flex items-center gap-0.5 max-w-max">
               <TrendingUp className="w-3 h-3" /> {language === 'bn' ? 'মোট বিক্রির লাভ' : 'Net sales profit'}
@@ -154,7 +154,7 @@ export const DashboardView: React.FC = () => {
               {t.dbDueReceivables}
             </span>
             <span className="text-xl font-mono font-bold text-rose-600 block">
-              {curSymbol} {totalDues.toLocaleString()}
+              {curSymbol} {(totalDues || 0).toLocaleString()}
             </span>
             <button 
               onClick={() => setActivePage('customers')}
@@ -175,7 +175,7 @@ export const DashboardView: React.FC = () => {
               {t.dbTotalExpenses}
             </span>
             <span className="text-xl font-mono font-bold text-slate-800 block">
-              {curSymbol} {totalExpenses.toLocaleString()}
+              {curSymbol} {(totalExpenses || 0).toLocaleString()}
             </span>
             <span className="text-[10px] text-slate-500 font-sans font-bold bg-slate-50 border border-slate-200 px-2 py-0.5 rounded flex items-center gap-0.5 max-w-max">
               <TrendingDown className="w-3 h-3" /> {language === 'bn' ? 'পরিচালন ব্যয়' : 'Operating costs'}
@@ -356,8 +356,8 @@ export const DashboardView: React.FC = () => {
                       })}
                     </td>
                     <td className="py-3 px-4 font-bold text-slate-800">{sale.customerName}</td>
-                    <td className="py-3 px-4 text-right font-mono font-bold text-slate-900">{curSymbol}{sale.totalAmount.toLocaleString()}</td>
-                    <td className="py-3 px-4 text-right text-emerald-600 font-bold font-mono">{curSymbol}{sale.paidAmount.toLocaleString()}</td>
+                    <td className="py-3 px-4 text-right font-mono font-bold text-slate-900">{curSymbol}{(sale.totalAmount || 0).toLocaleString()}</td>
+                    <td className="py-3 px-4 text-right text-emerald-600 font-bold font-mono">{curSymbol}{(sale.paidAmount || 0).toLocaleString()}</td>
                     <td className="py-3 px-4 text-right">
                       <span className={`px-2 py-0.5 rounded text-[9px] font-bold border ${
                         sale.dueAmount > 0 

@@ -790,30 +790,30 @@ export const SalesView: React.FC = () => {
             <div className="bg-slate-50 p-3 rounded-xl border border-slate-200/60 space-y-1.5">
               <div className="flex items-center justify-between text-xs text-slate-500">
                 <span>{t.salesSubtotal}:</span>
-                <span className="font-mono">{curSymbol}{subtotal.toLocaleString()}</span>
+                <span className="font-mono">{curSymbol}{(subtotal || 0).toLocaleString()}</span>
               </div>
               {settings.taxRate > 0 && (
                 <div className="flex items-center justify-between text-xs text-slate-500">
                   <span>{t.salesTax} ({settings.taxRate}%):</span>
-                  <span className="font-mono">+{curSymbol}{taxAmount.toLocaleString()}</span>
+                  <span className="font-mono">+{curSymbol}{(taxAmount || 0).toLocaleString()}</span>
                 </div>
               )}
               {discountAmount > 0 && (
                 <div className="flex items-center justify-between text-xs text-rose-500">
                   <span>{t.salesDiscount}:</span>
-                  <span className="font-mono">-{curSymbol}{discountAmount.toLocaleString()}</span>
+                  <span className="font-mono">-{curSymbol}{(discountAmount || 0).toLocaleString()}</span>
                 </div>
               )}
               <div className="flex items-center justify-between text-base font-black text-slate-900 border-t border-slate-200/60 pt-1.5">
                 <span>{t.salesGrandTotal}:</span>
-                <span className="font-mono text-emerald-600">{curSymbol}{grandTotal.toLocaleString()}</span>
+                <span className="font-mono text-emerald-600">{curSymbol}{(grandTotal || 0).toLocaleString()}</span>
               </div>
 
               {/* Outstanding Baqi Details */}
               {dueAmount > 0 && (
                 <div className="flex items-center justify-between text-xs font-bold text-rose-600 border-t border-dashed border-red-200 pt-1 flex-wrap">
                   <span>👇 {t.salesDueAmount}:</span>
-                  <span className="font-mono">{curSymbol}{dueAmount.toLocaleString()}</span>
+                  <span className="font-mono">{curSymbol}{(dueAmount || 0).toLocaleString()}</span>
                 </div>
               )}
             </div>
@@ -906,18 +906,18 @@ export const SalesView: React.FC = () => {
                   )}
                   <div className="flex justify-between font-extrabold text-slate-900 border-t border-slate-200 pt-1.5 text-xs">
                     <span>NET RECEIVABLE:</span>
-                    <span>{curSymbol}{lastRecordedSale.totalAmount.toLocaleString()}</span>
+                    <span>{curSymbol}{(lastRecordedSale.totalAmount || 0).toLocaleString()}</span>
                   </div>
                   <div className="flex justify-between text-emerald-600 font-bold border-t border-dashed border-slate-200 pt-1">
                     <span>CASH PAID:</span>
-                    <span>{curSymbol}{lastRecordedSale.paidAmount.toLocaleString()}</span>
+                    <span>{curSymbol}{(lastRecordedSale.paidAmount || 0).toLocaleString()}</span>
                   </div>
                   
                   {/* Outstandings */}
                   {lastRecordedSale.dueAmount > 0 && (
                     <div className="flex justify-between text-rose-500 font-extrabold border-t border-dashed border-red-200 pt-1">
                       <span>DUE / OUTSTANDING (Baqi):</span>
-                      <span>{curSymbol}{lastRecordedSale.dueAmount.toLocaleString()}</span>
+                      <span>{curSymbol}{(lastRecordedSale.dueAmount || 0).toLocaleString()}</span>
                     </div>
                   )}
                 </div>

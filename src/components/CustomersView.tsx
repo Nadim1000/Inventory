@@ -227,7 +227,7 @@ export const CustomersView: React.FC = () => {
                       {t.custTotalBought}
                     </span>
                     <span className="text-sm font-black text-slate-800 font-sans">
-                      {curSymbol}{c.totalSpent.toLocaleString()}
+                      {curSymbol}{(c.totalSpent || 0).toLocaleString()}
                     </span>
                   </div>
                   <div>
@@ -235,7 +235,7 @@ export const CustomersView: React.FC = () => {
                       {t.custDues}
                     </span>
                     <span className={`text-sm font-black font-sans ${hasDue ? 'text-rose-600' : 'text-slate-800'}`}>
-                      {curSymbol}{c.dueAmount.toLocaleString()}
+                      {curSymbol}{(c.dueAmount || 0).toLocaleString()}
                     </span>
                   </div>
                 </div>
@@ -419,7 +419,7 @@ export const CustomersView: React.FC = () => {
                   {language === 'bn' ? "মোট বকেয়া ব ব্যালেন্স" : "Outstanding Balance Due"}
                 </span>
                 <span className="text-3xl font-black text-rose-500 font-sans block">
-                  {curSymbol}{customers.find(c => c.id === collectingCustId)?.dueAmount.toLocaleString()}
+                  {curSymbol}{(customers.find(c => c.id === collectingCustId)?.dueAmount || 0).toLocaleString()}
                 </span>
               </div>
 

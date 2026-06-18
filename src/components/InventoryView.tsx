@@ -269,19 +269,19 @@ export const InventoryView: React.FC = () => {
 
                       {/* Purchase unit Cost */}
                       <td className="py-4 px-4 text-right font-bold text-slate-700">
-                        {curSymbol}{p.purchasePrice.toLocaleString()}
+                        {curSymbol}{(p.purchasePrice || 0).toLocaleString()}
                       </td>
 
                       {/* Sales customer price */}
                       <td className="py-4 px-4 text-right font-black text-slate-950">
-                        {curSymbol}{p.salesPrice.toLocaleString()}
+                        {curSymbol}{(p.salesPrice || 0).toLocaleString()}
                       </td>
 
                       {/* Net Margin Profit Margin */}
                       <td className="py-4 px-4 text-right">
                         <div className="space-y-0.5">
                           <span className="font-semibold text-emerald-600 block">
-                            +{curSymbol}{marginAmt.toLocaleString()}
+                            +{curSymbol}{(marginAmt || 0).toLocaleString()}
                           </span>
                           <span className="text-[9px] text-emerald-500 font-bold bg-emerald-50 px-1 py-0.5 rounded">
                             {marginPct}% {language === 'bn' ? 'লাভ' : 'Profit'}
