@@ -733,6 +733,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       ...cust,
       id: `c_${Date.now()}`,
       totalSpent: 0,
+      dueAmount: cust.dueAmount || 0,
       createdAt: new Date().toISOString()
     };
     setCustomers(prev => [newCustomer, ...prev]);
@@ -817,7 +818,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
           const newSpent = c.totalSpent + saleData.totalAmount - saleData.discount;
           const newDue = c.dueAmount + saleData.dueAmount;
           if (supabase) {
-            supabase.from('customers').update({ total_spent: newSpent, due_amount: newDue }).eq('id', c.id).then(({ error }) => {
+            supabase.from('customers').update({ 
+              total_spent: newSpent, 
+              due_amount: newDue
+            }).eq('id', c.id).then(({ error }) => {
               if (error) console.error("Supabase update customer dues/spent error:", error.message);
             });
           }
